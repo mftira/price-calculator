@@ -2,46 +2,287 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Price Calculator</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: Arial, sans-serif;
-            background: #121212;
+            background: linear-gradient(135deg, #1e1e1e, #2d2d2d);
             color: #f0f0f0;
-            padding: 2rem;
+            padding: 1rem;
+            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid #444;
+            border-radius: 8px;
+            background: #2a2a2a;
+            color: #f0f0f0;
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #007acc;
+            box-shadow: 0 0 10px rgba(0, 122, 204, 0.5);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: #007acc;
+            color: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        button:hover, button:active {
+            background: #005a9e;
+            transform: translateY(-1px);
+        }
+        
+        button.clear-btn {
+            background: #666;
+        }
+        
+        button.clear-btn:hover, button.clear-btn:active {
+            background: #555;
+        }
+        
+        #result {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            padding: 1.25rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-wrap: break-word;
             text-align: center;
         }
-        input, button {
-            padding: 0.5rem;
-            margin: 0.5rem;
-            font-size: 1rem;
-        }
-        #result {
+        
+        #rateInfo {
             margin-top: 1rem;
-            font-size: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            padding: 0.5rem;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .success {
+            color: #51cf66;
+            line-height: 1.4;
+        }
+        
+        code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+                margin: 0.5rem auto;
+                border-radius: 8px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            p {
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
+            }
+            
+            input {
+                padding: 0.875rem;
+                font-size: 1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            button {
+                width: 100%;
+                min-width: unset;
+                padding: 0.875rem;
+                font-size: 0.9rem;
+            }
+            
+            #result {
+                font-size: 1rem;
+                padding: 1rem;
+                min-height: 50px;
+            }
+            
+            #rateInfo {
+                font-size: 0.8rem;
+            }
+            
+            code {
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 320px) {
+            .container {
+                padding: 0.75rem;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            input, button {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Landscape mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            p {
+                margin-bottom: 0.75rem;
+            }
+            
+            .input-group {
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Price Calculator</h1>
-    <p>Enter a number (e.g. <code>100</code> or <code>100e</code> for EUR)</p>
-    <input type="text" id="userInput" placeholder="Enter number or 'e' for EUR">
-    <button onclick="calculate()">Calculate</button>
+    <div class="container">
+        <h1>Price Calculator</h1>
+        <p>Enter a number (e.g. <code>100</code> or <code>100e</code> for EUR)</p>
+        
+        <div class="input-group">
+            <input type="number" 
+                   id="userInput" 
+                   placeholder="Enter amount..." 
+                   onkeypress="handleKeyPress(event)"
+                   inputmode="decimal">
+        </div>
+        
+        <div class="button-group">
+            <button onclick="calculate()">Calculate</button>
+            <button onclick="clearInput()" class="clear-btn">Clear</button>
+        </div>
 
-    <div id="result"></div>
+        <div id="result"></div>
+        <div id="rateInfo"></div>
+    </div>
 
     <script>
         function parseInput(input) {
             input = input.trim().toLowerCase();
-            if (input.endsWith('e')) {
-                return { amount: parseFloat(input.slice(0, -1)), currency: 'e' };
+            if (input.endsWith('e') || input.endsWith('eur')) {
+                return { amount: parseFloat(input.replace(/[^\d.]/g, '')), currency: 'eur' };
             }
-            return { amount: parseFloat(input), currency: 'u' };
+            if (input.endsWith('gbp') || input.endsWith('£')) {
+                return { amount: parseFloat(input.replace(/[^\d.]/g, '')), currency: 'gbp' };
+            }
+            return { amount: parseFloat(input), currency: 'usd' };
         }
 
         function convertToUSD(amount, currency) {
-            const eurToUsd = 1.13;
-            return currency === 'e' ? amount * eurToUsd : amount;
+            const rates = {
+                'eur': 1.13,
+                'gbp': 1.31,
+                'usd': 1
+            };
+            return amount * (rates[currency] || 1);
+        }
+
+        function getCurrencySymbol(currency) {
+            const symbols = {
+                'eur': '€',
+                'gbp': '£',
+                'usd': '$'
+            };
+            return symbols[currency] || '$';
         }
 
         function calculatePrice(number) {
@@ -50,27 +291,65 @@
             else if (number < 30) rate = 3.7;
             else if (number < 50) rate = 3.6;
             else rate = 3.5;
+            
+            document.getElementById("rateInfo").innerHTML = `Rate applied: $${rate} per unit`;
             return number * rate;
+        }
+
+        function validateInput(amount) {
+            if (isNaN(amount)) return "Please enter a valid number";
+            if (amount <= 0) return "Amount must be greater than 0";
+            if (amount > 1000000) return "Amount too large (max: 1,000,000)";
+            return null;
         }
 
         function calculate() {
             const input = document.getElementById("userInput").value;
             const resultDiv = document.getElementById("result");
+            const rateInfo = document.getElementById("rateInfo");
+
+            if (!input.trim()) {
+                resultDiv.innerHTML = '<span class="error">Please enter a value</span>';
+                rateInfo.innerHTML = '';
+                return;
+            }
 
             try {
                 const { amount, currency } = parseInput(input);
-                if (isNaN(amount)) throw "Invalid input";
+                
+                const validationError = validateInput(amount);
+                if (validationError) {
+                    resultDiv.innerHTML = `<span class="error">❌ ${validationError}</span>`;
+                    rateInfo.innerHTML = '';
+                    return;
+                }
 
                 const amountUSD = convertToUSD(amount, currency);
                 const result = calculatePrice(amountUSD);
+                const originalSymbol = getCurrencySymbol(currency);
 
                 resultDiv.innerHTML = `
-                    ${currency === 'e' ? `Original: €${amount.toFixed(2)}<br>Converted: $${amountUSD.toFixed(2)}<br>` : `Amount in USD: $${amountUSD.toFixed(2)}<br>`}
-                    <strong>Result: $${result.toFixed(2)}</strong>
+                    <div class="success">
+                        ${currency !== 'usd' ? `Original: ${originalSymbol}${amount.toFixed(2)}<br>Converted: $${amountUSD.toFixed(2)}<br>` : `Amount: $${amountUSD.toFixed(2)}<br>`}
+                        <strong>Final Price: $${result.toFixed(2)}</strong>
+                    </div>
                 `;
-            } catch {
-                resultDiv.innerHTML = "❌ Please enter a valid number (e.g., '100' or '100e')";
+            } catch (error) {
+                resultDiv.innerHTML = '<span class="error">❌ Please enter a valid number (e.g., "100", "100e", "100eur", "100gbp")</span>';
+                rateInfo.innerHTML = '';
             }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                calculate();
+            }
+        }
+
+        function clearInput() {
+            document.getElementById("userInput").value = '';
+            document.getElementById("result").innerHTML = '';
+            document.getElementById("rateInfo").innerHTML = '';
         }
     </script>
 </body>
