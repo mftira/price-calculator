@@ -378,6 +378,10 @@
 
         function parseInput(input) {
             input = input.trim().toLowerCase();
+            
+            // Replace comma with dot for decimal separator
+            input = input.replace(',', '.');
+            
             if (input.endsWith('e') || input.endsWith('eur')) {
                 return { amount: parseFloat(input.replace(/[^\d.]/g, '')), currency: 'eur' };
             }
