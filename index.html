@@ -344,7 +344,7 @@
         <p>Enter a number (e.g. <code>100</code> or <code>100e</code> for EUR)</p>
         
         <div class="input-group">
-            <input type="number" 
+            <input type="text" 
                    id="userInput" 
                    placeholder="Enter amount..." 
                    onkeypress="handleKeyPress(event)"
@@ -379,16 +379,21 @@
         function parseInput(input) {
             input = input.trim().toLowerCase();
             
-            // Replace comma with dot for decimal separator
-            input = input.replace(',', '.');
+            // Replace comma with dot for decimal separator BEFORE checking currency
+            input = input.replace(/,/g, '.');
             
             if (input.endsWith('e') || input.endsWith('eur')) {
-                return { amount: parseFloat(input.replace(/[^\d.]/g, '')), currency: 'eur' };
+                const numericPart = input.replace(/[^\d.]/g, '');
+                return { amount: parseFloat(numericPart), currency: 'eur' };
             }
             if (input.endsWith('gbp') || input.endsWith('£')) {
-                return { amount: parseFloat(input.replace(/[^\d.]/g, '')), currency: 'gbp' };
+                const numericPart = input.replace(/[^\d.]/g, '');
+                return { amount: parseFloat(numericPart), currency: 'gbp' };
             }
-            return { amount: parseFloat(input), currency: 'usd' };
+            
+            // For USD or no currency specified
+            const numericPart = input.replace(/[^\d.]/g, '');
+            return { amount: parseFloat(numericPart), currency: 'usd' };
         }
 
         function convertToUSD(amount, currency) {
