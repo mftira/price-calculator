@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Price Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: #f0f0f0;
+            padding: 2rem;
+            text-align: center;
+        }
+        input, button {
+            padding: 0.5rem;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        #result {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Price Calculator</h1>
+    <p>Enter a number (e.g. <code>100</code> or <code>100e</code> for EUR)</p>
+    <input type="text" id="userInput" placeholder="Enter number or 'e' for EUR">
+    <button onclick="calculate()">Calculate</button>
+
+    <div id="result"></div>
+
+    <script>
+        function parseInput(input) {
+            input = input.trim().toLowerCase();
+            if (input.endsWith('e')) {
+                return { amount: parseFloat(input.slice(0, -1)), currency: 'e' };
+            }
+            return { amount: parseFloat(input), currency: 'u' };
+        }
+
+        function convertToUSD(amount, currency) {
+            const eurToUsd = 1.13;
+            return currency === 'e' ? amount * eurToUsd : amount;
+        }
+
+        function calculatePrice(number) {
+            let rate;
+            if (number < 10) rate = 4;
+            else if (number < 30) rate = 3.7;
+            else if (number < 50) rate = 3.6;
+            else rate = 3.5;
+            return number * rate;
+        }
+
+        function calculate() {
+            const input = document.getElementById("userInput").value;
+            const resultDiv = document.getElementById("result");
+
+            try {
+                const { amount, currency } = parseInput(input);
+                if (isNaN(amount)) throw "Invalid input";
+
+                const amountUSD = convertToUSD(amount, currency);
+                const result = calculatePrice(amountUSD);
+
+                resultDiv.innerHTML = `
+                    ${currency === 'e' ? `Original: €${amount.toFixed(2)}<br>Converted: $${amountUSD.toFixed(2)}<br>` : `Amount in USD: $${amountUSD.toFixed(2)}<br>`}
+                    <strong>Result: $${result.toFixed(2)}</strong>
+                `;
+            } catch {
+                resultDiv.innerHTML = "❌ Please enter a valid number (e.g., '100' or '100e')";
+            }
+        }
+    </script>
+</body>
+</html>
